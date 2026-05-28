@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Check, Clock, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,9 +45,12 @@ export function EventCard({ event, onChanged }: Props) {
           aria-hidden
         />
         <div className="min-w-0 flex-1 py-2">
-          <p className="truncate text-sm font-semibold">
+          <Link
+            href={`/medicamentos/${event.medication_id}/tratamiento`}
+            className="block truncate text-sm font-semibold hover:underline"
+          >
             {doseLabel(event.medication)}
-          </p>
+          </Link>
           <p className="text-xs text-muted-foreground">
             {shortTime(event.scheduled_time)} · {event.quantity} {unitWord(event.medication)}
           </p>
