@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { postponeEvent, setEventStatus } from "@/features/pill/services/events";
-import { STATUS_META, doseLabel, shortTime } from "@/features/pill/format";
+import { STATUS_META, doseLabel, shortTime, unitWord } from "@/features/pill/format";
 import type { EventStatus, PillEventWithMedication } from "@/features/pill/types";
 
 interface Props {
@@ -48,7 +48,7 @@ export function EventCard({ event, onChanged }: Props) {
                 {doseLabel(event.medication)}
               </p>
               <p className="text-sm text-muted-foreground">
-                {shortTime(event.scheduled_time)} · {event.quantity} u.
+                {shortTime(event.scheduled_time)} · {event.quantity} {unitWord(event.medication)}
               </p>
             </div>
             <Badge variant={meta.badge}>{meta.label}</Badge>

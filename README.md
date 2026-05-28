@@ -23,8 +23,9 @@ Tablas: `pill_medications`, `pill_treatments`, `pill_treatment_schedules`,
 
 ## Puesta en marcha
 
-1. Correr la migración SQL en el SQL Editor de Supabase:
-   `supabase/migrations/0001_pill_module.sql`
+1. Correr las migraciones SQL en el SQL Editor de Supabase (en orden):
+   `supabase/migrations/0001_pill_module.sql` y
+   `supabase/migrations/0002_medication_kind.sql`
 2. Copiar variables de entorno:
    ```bash
    cp .env.local.example .env.local
@@ -57,7 +58,20 @@ src/
 Separación: **UI** (`app`/`components`) → **servicios** (`features/pill/services`)
 → **datos** (Supabase). Las páginas nunca consultan Supabase directamente.
 
+## Medicamentos: con dosis o por unidad
+
+Cada medicamento tiene un `kind`:
+- `dose`: con dosis numérica (ej: Prednisona 1 mg).
+- `unit`: por unidad/forma (ej: 1 comprimido de Vitamina C).
+
+## Generación de calendario
+
+Al crear o editar un tratamiento se generan automáticamente las tomas
+(`pill_events`) recorriendo el rango de fechas (inicio → fin o duración) y los
+días/horarios elegidos. Al editar se regeneran las tomas pendientes y se
+conservan las ya marcadas (tomada / omitida / pospuesta). Ver
+`features/pill/services/calendar.ts`.
+
 ## Pendiente (próximas etapas)
 
-- Generación automática de eventos (`pill_events`) al crear un tratamiento.
 - Notificaciones (Notification API + Service Worker) y alarma sonora.

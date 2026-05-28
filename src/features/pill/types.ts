@@ -5,12 +5,17 @@ export type DurationUnit = "days" | "weeks" | "months";
 
 export type EventStatus = "pendiente" | "tomada" | "omitida" | "pospuesta";
 
+// "dose": medicamento con dosis (ej: Prednisona 1 mg)
+// "unit": medicamento por unidad (ej: 1 comprimido de Vitamina C)
+export type MedicationKind = "dose" | "unit";
+
 // day_of_week ISO: 1=lunes ... 7=domingo
 export type IsoWeekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type Medication = {
   id: string;
   name: string;
+  kind: MedicationKind;
   dose: number | null;
   unit: string | null;
   color: string;
@@ -131,6 +136,7 @@ export interface Database {
     Enums: {
       pill_duration_unit: DurationUnit;
       pill_event_status: EventStatus;
+      pill_medication_kind: MedicationKind;
     };
     CompositeTypes: Record<string, never>;
   };
