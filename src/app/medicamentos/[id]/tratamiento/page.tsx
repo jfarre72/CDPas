@@ -135,6 +135,7 @@ export default function TreatmentPage() {
   }
 
   const isEdit = treatmentId != null;
+  const allSelected = days.size === WEEKDAYS.length;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -169,7 +170,7 @@ export default function TreatmentPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label>Unidad</Label>
-                  <div className="inline-flex rounded-xl border p-1">
+                  <div className="flex w-fit rounded-xl border p-1">
                     {(Object.keys(UNIT_LABELS) as DurationUnit[]).map((u) => (
                       <button
                         key={u}
@@ -192,7 +193,16 @@ export default function TreatmentPage() {
               </p>
 
               <div className="space-y-2">
-                <Label>Días de la semana</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Días de la semana</Label>
+                  <button
+                    type="button"
+                    onClick={() => setDays(allSelected ? new Set() : new Set(WEEKDAYS.map((d) => d.value)))}
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    {allSelected ? "Quitar todos" : "Todos los días"}
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {WEEKDAYS.map((d) => (
                     <button
