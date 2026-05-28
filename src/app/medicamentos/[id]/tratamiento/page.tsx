@@ -147,9 +147,9 @@ export default function TreatmentPage() {
         <p className="text-muted-foreground">Cargando…</p>
       ) : (
         <Card>
-          <CardContent className="p-5">
+          <CardContent className="p-4 sm:p-5">
             <form onSubmit={submit} className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="start">Fecha de inicio</Label>
                   <Input id="start" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
@@ -160,7 +160,7 @@ export default function TreatmentPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="dval">Duración</Label>
                   <Input id="dval" type="number" min="1" value={durationValue} onChange={(e) => setDurationValue(e.target.value)} />
