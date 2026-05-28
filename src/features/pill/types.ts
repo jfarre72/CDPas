@@ -140,12 +140,12 @@ export interface Database {
   };
 }
 
-export const WEEKDAYS: { value: IsoWeekday; label: string; short: string }[] = [
-  { value: 1, label: "Lunes", short: "Lun" },
-  { value: 2, label: "Martes", short: "Mar" },
-  { value: 3, label: "Miércoles", short: "Mié" },
-  { value: 4, label: "Jueves", short: "Jue" },
-  { value: 5, label: "Viernes", short: "Vie" },
-  { value: 6, label: "Sábado", short: "Sáb" },
-  { value: 7, label: "Domingo", short: "Dom" },
+export const WEEKDAYS: { value: IsoWeekday; label: string; short: string; mini: string }[] = [
+  { value: 1, label: "Lunes", short: "Lun", mini: "L" },
+  { value: 2, label: "Martes", short: "Mar", mini: "Ma" },
+  { value: 3, label: "Miércoles", short: "Mié", mini: "Mi" },
+  { value: 4, label: "Jueves", short: "Jue", mini: "J" },
+  { value: 5, label: "Viernes", short: "Vie", mini: "V" },
+  { value: 6, label: "Sábado", short: "Sáb", mini: "S" },
+  { value: 7, label: "Domingo", short: "Dom", mini: "D" },
 ];
