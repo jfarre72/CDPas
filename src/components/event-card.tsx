@@ -37,47 +37,47 @@ export function EventCard({ event, onChanged }: Props) {
     <Card className="overflow-hidden">
       <div className="flex items-stretch">
         <div
-          className="w-2 shrink-0"
+          className="w-1.5 shrink-0"
           style={{ backgroundColor: event.medication.color }}
           aria-hidden
         />
-        <div className="flex-1 p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-base font-semibold">
+        <div className="flex-1 p-3">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">
                 {doseLabel(event.medication)}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {shortTime(event.scheduled_time)} · {event.quantity} {unitWord(event.medication)}
               </p>
             </div>
-            <Badge variant={meta.badge}>{meta.label}</Badge>
+            <Badge variant={meta.badge} className="shrink-0">{meta.label}</Badge>
           </div>
 
           {status === "pendiente" || status === "pospuesta" ? (
-            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-3 gap-1.5">
               <Button
-                size="lg"
+                size="sm"
                 disabled={busy}
                 onClick={() => apply(() => setEventStatus(event.id, "tomada"), "tomada")}
               >
-                <Check className="h-5 w-5" /> Tomada
+                <Check className="h-4 w-4" /> Tomada
               </Button>
               <Button
-                size="lg"
+                size="sm"
                 variant="secondary"
                 disabled={busy}
                 onClick={() => apply(() => postponeEvent(event.id, 10), "pospuesta")}
               >
-                <Clock className="h-5 w-5" /> +10 min
+                <Clock className="h-4 w-4" /> +10
               </Button>
               <Button
-                size="lg"
+                size="sm"
                 variant="outline"
                 disabled={busy}
                 onClick={() => apply(() => setEventStatus(event.id, "omitida"), "omitida")}
               >
-                <X className="h-5 w-5" /> Omitir
+                <X className="h-4 w-4" /> Omitir
               </Button>
             </div>
           ) : null}

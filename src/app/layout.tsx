@@ -17,15 +17,15 @@ export default function RootLayout({
       <body>
         <div className="min-h-screen">
           <header className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur">
-            <div className="container flex h-16 items-center justify-between">
-              <span className="text-xl font-bold tracking-tight">
+            <div className="container flex h-14 items-center justify-between gap-2">
+              <span className="text-lg font-bold tracking-tight sm:text-xl">
                 <span className="text-primary">CDP</span>
                 <span className="text-amber-500">astillero</span>
               </span>
               <MainNav />
             </div>
           </header>
-          <main className="container py-6">{children}</main>
+          <main className="container py-4">{children}</main>
         </div>
       </body>
     </html>
