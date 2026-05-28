@@ -200,20 +200,21 @@ export default function TreatmentPage() {
                     {allSelected ? "Quitar todos" : "Todos los días"}
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-7 gap-1">
                   {WEEKDAYS.map((d) => (
                     <button
                       key={d.value}
                       type="button"
+                      title={d.label}
                       onClick={() => toggleDay(d.value)}
                       className={
-                        "h-11 w-12 rounded-xl border text-sm font-medium transition-colors " +
+                        "h-11 w-full rounded-lg border text-sm font-medium transition-colors " +
                         (days.has(d.value)
                           ? "border-primary bg-primary text-primary-foreground"
                           : "bg-card text-muted-foreground hover:bg-accent")
                       }
                     >
-                      {d.short}
+                      {d.mini}
                     </button>
                   ))}
                 </div>
