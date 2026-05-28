@@ -30,7 +30,6 @@ export async function listEventsForDate(
 }
 
 interface UpdateStatusOptions {
-  postponedUntil?: string | null;
   notes?: string | null;
 }
 
@@ -41,7 +40,6 @@ export async function setEventStatus(
 ): Promise<void> {
   const patch: Partial<PillEvent> = { status };
   if (status === "tomada") patch.taken_at = new Date().toISOString();
-  if (status === "pospuesta") patch.postponed_until = options.postponedUntil ?? null;
   if (options.notes !== undefined) patch.notes = options.notes;
 
   const { error } = await supabase
@@ -52,10 +50,4 @@ export async function setEventStatus(
 
   // Auditoría en pill_logs (best-effort, no bloquea la acción principal).
   await supabase.from("pill_logs").insert({ event_id: eventId, action: status, new_status: status });
-}
-
-// Posponer N minutos desde ahora.
-export async function postponeEvent(eventId: string, minutes: number): Promise<void> {
-  const until = new Date(Date.now() + minutes * 60_000).toISOString();
-  return setEventStatus(eventId, "pospuesta", { postponedUntil: until });
 }

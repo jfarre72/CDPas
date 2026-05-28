@@ -3,7 +3,7 @@
 
 export type DurationUnit = "days" | "weeks" | "months";
 
-export type EventStatus = "pendiente" | "tomada" | "omitida" | "pospuesta";
+export type EventStatus = "pendiente" | "tomada" | "omitida";
 
 // "dose": medicamento con dosis (ej: Prednisona 1 mg)
 // "unit": medicamento por unidad (ej: 1 comprimido de Vitamina C)
@@ -33,7 +33,6 @@ export type Treatment = {
   duration_unit: DurationUnit | null;
   end_date: string | null;
   quantity_per_dose: number;
-  alarm_enabled: boolean;
   notes: string | null;
   active: boolean;
   created_at: string;
@@ -57,7 +56,6 @@ export type PillEvent = {
   quantity: number;
   status: EventStatus;
   taken_at: string | null;
-  postponed_until: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
