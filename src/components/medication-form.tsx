@@ -6,8 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createMedication } from "@/features/pill/services/medications";
-import type { MedicationKind } from "@/features/pill/types";
+import {
+  createMedication,
+  updateMedication,
+} from "@/features/pill/services/medications";
+import type { Medication, MedicationKind } from "@/features/pill/types";
 
 const PRESET_COLORS = [
   "#ef4444",
@@ -21,23 +24,25 @@ const PRESET_COLORS = [
 ];
 
 interface Props {
-  onCreated: () => void;
+  medication?: Medication | null;
+  onSaved: () => void;
   onCancel: () => void;
 }
 
-export function MedicationForm({ onCreated, onCancel }: Props) {
-  const [name, setName] = useState("");
-  const [kind, setKind] = useState<MedicationKind>("dose");
-  const [dose, setDose] = useState("");
-  const [unit, setUnit] = useState("mg");
-  const [color, setColor] = useState(PRESET_COLORS[5]);
-  const [notes, setNotes] = useState("");
-  const [active, setActive] = useState(true);
+export function MedicationForm({ medication, onSaved, onCancel }: Props) {
+  const isEdit = medication != null;
+  const [name, setName] = useState(medication?.name ?? "");
+  const [kind, setKind] = useState<MedicationKind>(medication?.kind ?? "dose");
+  const [dose, setDose] = useState(medication?.dose != null ? String(medication.dose) : "");
+  const [unit, setUnit] = useState(medication?.unit ?? "mg");
+  const [color, setColor] = useState(medication?.color ?? PRESET_COLORS[5]);
+  const [notes, setNotes] = useState(medication?.notes ?? "");
+  const [active, setActive] = useState(medication?.active ?? true);
   const [busy, setBusy] = useState(false);
 
   function chooseKind(k: MedicationKind) {
     setKind(k);
-    setUnit(k === "dose" ? "mg" : "comprimido");
+    setUnit((prev) => prev || (k === "dose" ? "mg" : "comprimido"));
     if (k === "unit") setDose("");
   }
 
@@ -46,7 +51,7 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
     if (!name.trim()) return;
     setBusy(true);
     try {
-      await createMedication({
+      const payload = {
         name: name.trim(),
         kind,
         dose: kind === "dose" && dose ? Number(dose) : null,
@@ -54,8 +59,10 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
         color,
         notes: notes.trim() || null,
         active,
-      });
-      onCreated();
+      };
+      if (isEdit) await updateMedication(medication.id, payload);
+      else await createMedication(payload);
+      onSaved();
     } catch (err) {
       console.error(err);
       alert("No se pudo guardar el medicamento.");
@@ -66,11 +73,11 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
 
   return (
     <Card>
-      <CardContent className="p-5">
+      <CardContent className="p-4 sm:p-5">
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-1.5">
             <Label>Tipo</Label>
-            <div className="inline-flex rounded-xl border p-1">
+            <div className="flex w-fit rounded-xl border p-1">
               <button
                 type="button"
                 onClick={() => chooseKind("dose")}
@@ -95,7 +102,7 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-1.5 sm:col-span-1">
+            <div className="space-y-1.5">
               <Label htmlFor="name">Nombre</Label>
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder={kind === "dose" ? "Prednisona" : "Vitamina C"} required />
             </div>
@@ -142,7 +149,7 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
 
           <div className="flex gap-2">
             <Button type="submit" disabled={busy}>
-              Guardar
+              {isEdit ? "Guardar cambios" : "Guardar"}
             </Button>
             <Button type="button" variant="ghost" onClick={onCancel}>
               Cancelar

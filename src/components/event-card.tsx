@@ -33,54 +33,62 @@ export function EventCard({ event, onChanged }: Props) {
     }
   }
 
+  const actionable = status === "pendiente" || status === "pospuesta";
+
   return (
     <Card className="overflow-hidden">
-      <div className="flex items-stretch">
+      <div className="flex items-center gap-3">
         <div
-          className="w-1.5 shrink-0"
+          className="w-1.5 shrink-0 self-stretch"
           style={{ backgroundColor: event.medication.color }}
           aria-hidden
         />
-        <div className="flex-1 p-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">
-                {doseLabel(event.medication)}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {shortTime(event.scheduled_time)} · {event.quantity} {unitWord(event.medication)}
-              </p>
-            </div>
-            <Badge variant={meta.badge} className="shrink-0">{meta.label}</Badge>
-          </div>
+        <div className="min-w-0 flex-1 py-2">
+          <p className="truncate text-sm font-semibold">
+            {doseLabel(event.medication)}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {shortTime(event.scheduled_time)} · {event.quantity} {unitWord(event.medication)}
+          </p>
+        </div>
 
-          {status === "pendiente" || status === "pospuesta" ? (
-            <div className="mt-3 grid grid-cols-3 gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5 pr-3">
+          {actionable ? (
+            <>
               <Button
                 size="sm"
                 disabled={busy}
                 onClick={() => apply(() => setEventStatus(event.id, "tomada"), "tomada")}
               >
-                <Check className="h-4 w-4" /> Tomada
+                <Check className="h-4 w-4" />
+                <span className="hidden sm:inline">Tomada</span>
               </Button>
               <Button
-                size="sm"
+                size="icon"
                 variant="secondary"
+                className="h-9 w-9"
                 disabled={busy}
+                title="Posponer 10 minutos"
+                aria-label="Posponer 10 minutos"
                 onClick={() => apply(() => postponeEvent(event.id, 10), "pospuesta")}
               >
-                <Clock className="h-4 w-4" /> +10
+                <Clock className="h-4 w-4" />
               </Button>
               <Button
-                size="sm"
+                size="icon"
                 variant="outline"
+                className="h-9 w-9"
                 disabled={busy}
+                title="Omitir"
+                aria-label="Omitir"
                 onClick={() => apply(() => setEventStatus(event.id, "omitida"), "omitida")}
               >
-                <X className="h-4 w-4" /> Omitir
+                <X className="h-4 w-4" />
               </Button>
-            </div>
-          ) : null}
+            </>
+          ) : (
+            <Badge variant={meta.badge}>{meta.label}</Badge>
+          )}
         </div>
       </div>
     </Card>
