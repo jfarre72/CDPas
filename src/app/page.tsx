@@ -70,6 +70,10 @@ export default function TodayPage() {
         </div>
       </div>
 
+      <div className="rounded-xl bg-accent p-3 text-sm text-accent-foreground">
+        Hay días duros, pero también hay fuerza. Y vos ya lo demostraste. Todo va a estar bien.
+      </div>
+
       {loading && <p className="text-sm text-muted-foreground">Cargando…</p>}
       {error && <p className="text-sm text-destructive">{error}</p>}
 

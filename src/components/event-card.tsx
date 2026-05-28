@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Clock, X } from "lucide-react";
+import Link from "next/link";
+import { Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { postponeEvent, setEventStatus } from "@/features/pill/services/events";
+import { setEventStatus } from "@/features/pill/services/events";
 import { STATUS_META, doseLabel, shortTime, unitWord } from "@/features/pill/format";
 import type { EventStatus, PillEventWithMedication } from "@/features/pill/types";
 
@@ -33,7 +34,7 @@ export function EventCard({ event, onChanged }: Props) {
     }
   }
 
-  const actionable = status === "pendiente" || status === "pospuesta";
+  const actionable = status === "pendiente";
 
   return (
     <Card className="overflow-hidden">
@@ -44,9 +45,12 @@ export function EventCard({ event, onChanged }: Props) {
           aria-hidden
         />
         <div className="min-w-0 flex-1 py-2">
-          <p className="truncate text-sm font-semibold">
+          <Link
+            href={`/medicamentos/${event.medication_id}/tratamiento`}
+            className="block truncate text-sm font-semibold hover:underline"
+          >
             {doseLabel(event.medication)}
-          </p>
+          </Link>
           <p className="text-xs text-muted-foreground">
             {shortTime(event.scheduled_time)} · {event.quantity} {unitWord(event.medication)}
           </p>
@@ -62,17 +66,6 @@ export function EventCard({ event, onChanged }: Props) {
               >
                 <Check className="h-4 w-4" />
                 <span className="hidden sm:inline">Tomada</span>
-              </Button>
-              <Button
-                size="icon"
-                variant="secondary"
-                className="h-9 w-9"
-                disabled={busy}
-                title="Posponer 10 minutos"
-                aria-label="Posponer 10 minutos"
-                onClick={() => apply(() => postponeEvent(event.id, 10), "pospuesta")}
-              >
-                <Clock className="h-4 w-4" />
               </Button>
               <Button
                 size="icon"

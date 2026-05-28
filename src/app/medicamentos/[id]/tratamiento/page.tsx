@@ -39,7 +39,6 @@ export default function TreatmentPage() {
   const [days, setDays] = useState<Set<IsoWeekday>>(new Set());
   const [times, setTimes] = useState<string[]>(["08:00"]);
   const [quantity, setQuantity] = useState("1");
-  const [alarm, setAlarm] = useState(true);
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -61,7 +60,6 @@ export default function TreatmentPage() {
           setDurationUnit(existing.duration_unit ?? "weeks");
           setEndDate(existing.end_date ?? "");
           setQuantity(String(existing.quantity_per_dose));
-          setAlarm(existing.alarm_enabled);
           setNotes(existing.notes ?? "");
           setDays(new Set(sched.map((s) => s.day_of_week)));
           const uniqueTimes = [...new Set(sched.map((s) => shortTime(s.time_of_day)))].sort();
@@ -115,7 +113,6 @@ export default function TreatmentPage() {
         duration_unit: durationUnit,
         end_date: endDate || null,
         quantity_per_dose: Number(quantity) || 1,
-        alarm_enabled: alarm,
         notes: notes.trim() || null,
         active: true,
       };
@@ -246,11 +243,6 @@ export default function TreatmentPage() {
                 <Input id="qty" type="number" step="any" min="0" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="w-40" />
               </div>
 
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={alarm} onChange={(e) => setAlarm(e.target.checked)} className="h-4 w-4" />
-                Activar alarma / notificación
-              </label>
-
               <div className="space-y-1.5">
                 <Label htmlFor="tnotes">Observaciones</Label>
                 <Textarea id="tnotes" value={notes} onChange={(e) => setNotes(e.target.value)} />
@@ -258,7 +250,7 @@ export default function TreatmentPage() {
 
               <div className="rounded-xl bg-accent p-3 text-sm text-accent-foreground">
                 Al guardar se {isEdit ? "regenera" : "genera"} automáticamente el calendario de tomas.
-                Las tomas ya marcadas (tomada / omitida / pospuesta) se conservan.
+                Las tomas ya marcadas (tomada / omitida) se conservan.
               </div>
 
               <div className="flex gap-2">

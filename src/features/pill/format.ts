@@ -31,5 +31,4 @@ export const STATUS_META: Record<
   pendiente: { label: "Pendiente", badge: "default" },
   tomada: { label: "Tomada", badge: "success" },
   omitida: { label: "Omitida", badge: "muted" },
-  pospuesta: { label: "Pospuesta", badge: "warning" },
 };
