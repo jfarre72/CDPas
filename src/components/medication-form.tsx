@@ -101,7 +101,7 @@ export function MedicationForm({ medication, onSaved, onCancel }: Props) {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="space-y-1.5">
               <Label htmlFor="name">Nombre</Label>
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder={kind === "dose" ? "Prednisona" : "Vitamina C"} required />
