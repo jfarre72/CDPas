@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarCheck, CalendarPlus, Plus, Trash2 } from "lucide-react";
+import { CalendarCheck, CalendarPlus, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,7 @@ export default function MedicationsPage() {
   const [treatedIds, setTreatedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Medication | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function load() {
@@ -36,6 +37,21 @@ export default function MedicationsPage() {
   useEffect(() => {
     load();
   }, []);
+
+  function openCreate() {
+    setEditing(null);
+    setShowForm(true);
+  }
+
+  function openEdit(med: Medication) {
+    setEditing(med);
+    setShowForm(true);
+  }
+
+  function closeForm() {
+    setShowForm(false);
+    setEditing(null);
+  }
 
   async function handleDelete(med: Medication) {
     const hasTreatment = treatedIds.has(med.id);
@@ -59,7 +75,7 @@ export default function MedicationsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold sm:text-2xl">Medicamentos</h1>
-        <Button size="sm" onClick={() => setShowForm((s) => !s)}>
+        <Button size="sm" onClick={() => (showForm ? closeForm() : openCreate())}>
           <Plus className="h-4 w-4" /> Nuevo
         </Button>
       </div>
@@ -70,11 +86,12 @@ export default function MedicationsPage() {
 
       {showForm && (
         <MedicationForm
-          onCreated={() => {
-            setShowForm(false);
+          medication={editing}
+          onSaved={() => {
+            closeForm();
             load();
           }}
-          onCancel={() => setShowForm(false)}
+          onCancel={closeForm}
         />
       )}
 
@@ -107,16 +124,27 @@ export default function MedicationsPage() {
                     {!med.active && <Badge variant="muted">Inactivo</Badge>}
                   </div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
-                  disabled={deletingId === med.id}
-                  onClick={() => handleDelete(med)}
-                  aria-label="Eliminar medicamento"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex shrink-0 items-center">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    onClick={() => openEdit(med)}
+                    aria-label="Editar medicamento"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                    disabled={deletingId === med.id}
+                    onClick={() => handleDelete(med)}
+                    aria-label="Eliminar medicamento"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <Link
                 href={`/medicamentos/${med.id}/tratamiento`}
