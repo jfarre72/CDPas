@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createMedication } from "@/features/pill/services/medications";
+import type { MedicationKind } from "@/features/pill/types";
 
 const PRESET_COLORS = [
   "#ef4444",
@@ -26,12 +27,19 @@ interface Props {
 
 export function MedicationForm({ onCreated, onCancel }: Props) {
   const [name, setName] = useState("");
+  const [kind, setKind] = useState<MedicationKind>("dose");
   const [dose, setDose] = useState("");
   const [unit, setUnit] = useState("mg");
   const [color, setColor] = useState(PRESET_COLORS[5]);
   const [notes, setNotes] = useState("");
   const [active, setActive] = useState(true);
   const [busy, setBusy] = useState(false);
+
+  function chooseKind(k: MedicationKind) {
+    setKind(k);
+    setUnit(k === "dose" ? "mg" : "comprimido");
+    if (k === "unit") setDose("");
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,7 +48,8 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
     try {
       await createMedication({
         name: name.trim(),
-        dose: dose ? Number(dose) : null,
+        kind,
+        dose: kind === "dose" && dose ? Number(dose) : null,
         unit: unit.trim() || null,
         color,
         notes: notes.trim() || null,
@@ -59,18 +68,46 @@ export function MedicationForm({ onCreated, onCancel }: Props) {
     <Card>
       <CardContent className="p-5">
         <form onSubmit={submit} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label>Tipo</Label>
+            <div className="inline-flex rounded-xl border p-1">
+              <button
+                type="button"
+                onClick={() => chooseKind("dose")}
+                className={
+                  "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors " +
+                  (kind === "dose" ? "bg-primary text-primary-foreground" : "text-muted-foreground")
+                }
+              >
+                Con dosis
+              </button>
+              <button
+                type="button"
+                onClick={() => chooseKind("unit")}
+                className={
+                  "rounded-lg px-3 py-1.5 text-sm font-medium transition-colors " +
+                  (kind === "unit" ? "bg-primary text-primary-foreground" : "text-muted-foreground")
+                }
+              >
+                Por unidad
+              </button>
+            </div>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-1.5 sm:col-span-1">
               <Label htmlFor="name">Nombre</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Prednisona" required />
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder={kind === "dose" ? "Prednisona" : "Vitamina C"} required />
             </div>
+            {kind === "dose" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="dose">Dosis</Label>
+                <Input id="dose" type="number" step="any" value={dose} onChange={(e) => setDose(e.target.value)} placeholder="1" />
+              </div>
+            )}
             <div className="space-y-1.5">
-              <Label htmlFor="dose">Dosis</Label>
-              <Input id="dose" type="number" step="any" value={dose} onChange={(e) => setDose(e.target.value)} placeholder="1" />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="unit">Unidad</Label>
-              <Input id="unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="mg" />
+              <Label htmlFor="unit">{kind === "dose" ? "Unidad" : "Forma"}</Label>
+              <Input id="unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder={kind === "dose" ? "mg" : "comprimido"} />
             </div>
           </div>
 

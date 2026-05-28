@@ -2,24 +2,31 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarPlus, Plus } from "lucide-react";
+import { CalendarCheck, CalendarPlus, Plus } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { MedicationForm } from "@/components/medication-form";
 import { listMedications } from "@/features/pill/services/medications";
+import { listTreatments } from "@/features/pill/services/treatments";
 import { doseLabel } from "@/features/pill/format";
 import type { Medication } from "@/features/pill/types";
 
 export default function MedicationsPage() {
   const [meds, setMeds] = useState<Medication[]>([]);
+  const [treatedIds, setTreatedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
   async function load() {
     setLoading(true);
     try {
-      setMeds(await listMedications(true));
+      const [medList, treatments] = await Promise.all([
+        listMedications(true),
+        listTreatments(),
+      ]);
+      setMeds(medList);
+      setTreatedIds(new Set(treatments.map((t) => t.medication_id)));
     } finally {
       setLoading(false);
     }
@@ -74,18 +81,27 @@ export default function MedicationsPage() {
                   {med.notes && (
                     <p className="mt-1 text-sm text-muted-foreground">{med.notes}</p>
                   )}
-                  {!med.active && (
-                    <Badge variant="muted" className="mt-2">
-                      Inactivo
-                    </Badge>
-                  )}
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {treatedIds.has(med.id) && (
+                      <Badge variant="success">Con tratamiento</Badge>
+                    )}
+                    {!med.active && <Badge variant="muted">Inactivo</Badge>}
+                  </div>
                 </div>
               </div>
               <Link
                 href={`/medicamentos/${med.id}/tratamiento`}
                 className={buttonVariants({ variant: "secondary", className: "mt-4 w-full" })}
               >
-                <CalendarPlus className="h-4 w-4" /> Crear tratamiento
+                {treatedIds.has(med.id) ? (
+                  <>
+                    <CalendarCheck className="h-4 w-4" /> Ver / editar tratamiento
+                  </>
+                ) : (
+                  <>
+                    <CalendarPlus className="h-4 w-4" /> Crear tratamiento
+                  </>
+                )}
               </Link>
             </CardContent>
           </Card>
